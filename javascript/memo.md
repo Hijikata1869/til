@@ -6,3 +6,16 @@
 
 ### オペランド
 if文などの式の中で演算子の対象となっているものです。 つまり、演算子の左右にある変数や数字のことです。 そのため、オペランドは被演算子とも呼ばれます。
+
+## 5/4
+### for ... of
+```:for ... ofの例
+const array = ['a', 'b', 'c'];
+for (const element of array) {
+  console.log(element);
+}
+// Expected output: "a"
+// Expected output: "b"
+// Expected output: "c"
+```
+こんな感じで中身に対して繰り返し処理できる。
