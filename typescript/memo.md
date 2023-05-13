@@ -106,3 +106,61 @@ let foo: Function
 // number型の引数2つを受け取り、number型の戻り値を返す関数の型指定の実装例
 foo: (bar: number, baz: number) => number;
 ```
+
+## 5/9
+### unknown型
+any型ではtypescriptは型チェックをしないが、unknown型であれば型チェックがされる。そのため、any型よりは良い選択肢になる。  
+voidとneverは戻り値がない点では同じ。しかし、関数が終了するかどうかが異なる。voidは関数が最後まで実行される。neverは関数の処理が中断、もしくは永遠に続く続くことを意味する。そのため、戻り値がneverの関数が関数が最後まで到達できてしまう実装の場合、typescriptはコンパイルエラーを出す。
+
+## 5/11
+### watchモード
+```
+tsc ○○○.ts
+```
+とターミナルで入力することでファイルをコンパイルできるが、ファイルを変更して保存するたびにコンパイルしなければならない。そこで、
+```
+tsc ○○○.ts --wathc
+// or
+tsc ○○○.ts -w
+```
+とすることで、typescriptがこのファイルの変更を検知して自動でコンパイルしてくれるようになる。ただし、このやり方の場合、１ファイルしか感知できないというデメリットがある。
+
+## 5/13
+### アロー関数における型指定
+引数が一つで、()を省略するときのアロー関数の型指定の仕方は以下。
+```
+const foo: (bar: ) = bar => {
+  console.log(bar);
+}
+```
+
+### 5/14
+```
+// デフォルト関数パラメータ
+const foo = (bar: number, baz: number = 1) => {
+  return bar + baz;
+};
+foo(2); // expected output: 3
+
+// スプレッドオペレータ
+const array = ['foo', 'bar', 'baz'];
+const newArray: string[] = [];
+newArray.push(...array);
+console.log(newArray); // expected output: ['foo', 'bar', 'baz'];
+
+// レストパラメータ
+const add = (...numbers: number[]) => {
+  return numbers.reduce((curResult, curValue) => {
+    return curResult + curValue;
+  }, 0);
+};
+const result = add(1, 2, 3, 4);
+console.log(result); // expected output: 10
+
+// 分割代入
+// 配列
+const foo = ['bar', 'baz'];
+const [bar, baz] = foo;
+console.log(bar); // expected output: 'bar';
+console.log(baz); // expected output: 'baz';
+```
