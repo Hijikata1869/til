@@ -129,7 +129,7 @@ tsc ○○○.ts -w
 ### アロー関数における型指定
 引数が一つで、()を省略するときのアロー関数の型指定の仕方は以下。
 ```
-const foo: (bar: ) = bar => {
+const foo: (bar: string | number) => void = bar => {
   console.log(bar);
 }
 ```
@@ -140,13 +140,15 @@ const foo: (bar: ) = bar => {
 const foo = (bar: number, baz: number = 1) => {
   return bar + baz;
 };
-foo(2); // expected output: 3
+foo(2);
+// expected output: 3
 
 // スプレッドオペレータ
 const array = ['foo', 'bar', 'baz'];
 const newArray: string[] = [];
 newArray.push(...array);
-console.log(newArray); // expected output: ['foo', 'bar', 'baz'];
+console.log(newArray);
+// expected output: ['foo', 'bar', 'baz'];
 
 // レストパラメータ
 const add = (...numbers: number[]) => {
@@ -155,7 +157,8 @@ const add = (...numbers: number[]) => {
   }, 0);
 };
 const result = add(1, 2, 3, 4);
-console.log(result); // expected output: 10
+console.log(result);
+// expected output: 10
 
 // 分割代入
 // 配列
