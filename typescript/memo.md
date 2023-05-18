@@ -167,3 +167,6 @@ const [bar, baz] = foo;
 console.log(bar); // expected output: 'bar';
 console.log(baz); // expected output: 'baz';
 ```
+
+### 5/17
+typescriptにおけるクラスの学習を開始
