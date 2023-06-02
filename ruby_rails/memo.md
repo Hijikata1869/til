@@ -5,5 +5,6 @@ rubyで使われている"||="がわからなかったのでメモ。左辺がni
 name1 = nil
 name2 = "foo"
 name1 ||= name2
+puts name1
 // expected output: "foo"
 ```
