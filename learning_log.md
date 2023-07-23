@@ -12,3 +12,7 @@ redisを用いたログイン機能実装続き
 
 # 7/22
 sessionを用いたcrudを学習
+
+# 7/23
+cache_storeで改めてredisの設定をしてみる。
+その上でcookieからparamsで取得したsesson_idの処理方法を変更してみる。
