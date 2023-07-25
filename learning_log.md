@@ -16,3 +16,6 @@ sessionを用いたcrudを学習
 # 7/23
 cache_storeで改めてredisの設定をしてみる。
 その上でcookieからparamsで取得したsesson_idの処理方法を変更してみる。
+
+# 7/25
+セッションについては概ね完了かなーという感じ
