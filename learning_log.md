@@ -26,3 +26,6 @@ corsでセッションとかCookieが関わってくる場合には、withCreden
 
 # 7/28
 cors(特にRails)について引き続き調査
+
+# 7/29
+cookieが削除されない問題を修正したい
