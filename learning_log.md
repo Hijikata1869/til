@@ -41,3 +41,6 @@ middleware周りを試している
 
 # 9/20
 Linux基礎の学習
+
+# 9/23
+HTML基礎。codeタグやfieldsetタグは知らなかった。
