@@ -74,4 +74,4 @@ flex-boxを使って、２カラムレイアウト、３カラムレイアウト
 
 # 10/2
 レスポンシブデザインのレッスンに移行。メディアクエリで設定するmin-widthは、「最低でも幅が ooo pxはある」という意味。min-width: 600pxなら、width >= 600 ということ。
-逆に、max-widthは「最低でも ooo px」ということ。max-width: 800pxなら、width <= 800px ということ。
+逆に、max-widthは「ooo px以下だったら」ということ。max-width: 800pxなら、width <= 800px ということ。
