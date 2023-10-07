@@ -85,3 +85,6 @@ RailsTutorialの学習を開始。
 
 # 10/5
 RailsTutorialの4.3.1の演習まで完了。
+
+# 10/7
+RailsTutorialの4.3.2の演習まで完了。
