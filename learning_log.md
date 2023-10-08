@@ -88,3 +88,6 @@ RailsTutorialの4.3.1の演習まで完了。
 
 # 10/7
 RailsTutorialの4.3.2の演習まで完了。
+
+# 10/8
+RailsTutorial4.3.3の演習途中。
