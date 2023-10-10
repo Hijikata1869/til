@@ -91,3 +91,6 @@ RailsTutorialの4.3.2の演習まで完了。
 
 # 10/8
 RailsTutorial4.3.3の演習途中。
+
+# 10/9
+RailsTutorial4.3.3演習が終了。発展演習に移行。
