@@ -94,3 +94,6 @@ RailsTutorial4.3.3の演習途中。
 
 # 10/9
 RailsTutorial4.3.3演習が終了。発展演習に移行。
+
+# 10/21
+RailsTutorial9章、発展的なログイン機構の理解に努める
