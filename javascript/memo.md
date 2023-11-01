@@ -19,3 +19,6 @@ for (const element of array) {
 // Expected output: "c"
 ```
 こんな感じで中身に対して繰り返し処理できる。
+
+# 11/1
+constで定義したオブジェクトや配列のプロパティは変更可能

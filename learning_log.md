@@ -106,3 +106,5 @@ RailsTutorial9章、発展的なログイン機構の理解に努める。
 
 # 10/276
 RailsTutorial10章
+
+# 10/31
