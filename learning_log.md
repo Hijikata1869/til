@@ -107,4 +107,8 @@ RailsTutorial9章、発展的なログイン機構の理解に努める。
 # 10/276
 RailsTutorial10章
 
-# 10/31
+# 11/1
+const, let, テンプレート文字列、アロー関数、分割代入、デフォルト値、スプレッド構文、mapやfilterを用いた配列の処理
+
+# 11/2
+vanilla javascriptでTODOアプリを作成
