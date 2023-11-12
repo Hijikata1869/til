@@ -63,3 +63,6 @@ Role.ADMIN // 'AUTHOR'
 Role.READ_ONLY // 100
 Role.AUTHOR // 200
 このようにして取り出す。if文などで使うこともできる。
+
+# any型
+TypeScriptの中で一番柔軟な型。どんな値でも入れることができる。ただし、この型を使うとTypeScriptの恩恵を得られないため、できるだけ使わないほうがいい。
