@@ -66,3 +66,11 @@ Role.AUTHOR // 200
 
 # any型
 TypeScriptの中で一番柔軟な型。どんな値でも入れることができる。ただし、この型を使うとTypeScriptの恩恵を得られないため、できるだけ使わないほうがいい。
+
+# union型
+例えばある関数の引数をnumber型とstring型にしたい場合、
+
+function foobar(attr1: number | string, attr2: number | string) {
+  ......
+}
+のように、型をパイプでつないで記述することで柔軟な型定義を実装できる。
