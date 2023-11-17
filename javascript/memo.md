@@ -27,3 +27,17 @@ constで定義したオブジェクトや配列のプロパティは変更可能
 ## ファイルの関数を記述する位置について
 プログラムの中で関数と関数を呼び出す側をどちらを先に記述すればいいのかについて、どちらから先に記述しても問題ありません。一般的には関数を先に定義しておき、そのあとで関数を呼び出すように記述されるケースが多いですが、関数の定義をあとに記述しても問題はありません。
 （参考：https://www.javadrive.jp/javascript/function/index6.html）
+
+# オブジェクトの分割代入におけるプロパティ名の上書き
+const person = {
+  nickname: 'Max',
+  age: 30
+}
+
+// 通常は、代入する変数名はオブジェクトのプロパティ名である必要がある
+const { nickname, age } = person;
+
+// しかし、プロパティ名の後ろにコロンをつけることで、プロパティ名を上書きできる
+const { nickname: userName, age } = person;
+
+console.log(userName, age ) // 'Max', 30
