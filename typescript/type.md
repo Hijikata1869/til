@@ -80,7 +80,7 @@ function foobar(attr1: number | string, attr2: number | string) {
 
 const number: 2.8;
 と定義した場合、numberには2.8以外の値を代入することはできない。
-リテラル型と組み合わせて使うこともでき、
+Union型と組み合わせて使うこともでき、
 
 const foo: "as-text" | "as-number"
 とすると、fooには文字列のas-textかas-numberしか入らない型を定義することができる。関数の引数の文字列を明示的に指定したい場合などに便利。
