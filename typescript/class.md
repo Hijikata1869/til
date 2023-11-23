@@ -158,3 +158,95 @@ class SecondPractice extends Practice {
     this.admins = admins;
   }
 }
+
+# protected修飾子
+private修飾子をつけたプロパティはそれを定義したクラス内でのみアクセスでき、継承先のクラス内からはアクセスできない。しかし、このprivateをprotected修飾子に変えることで引き続き外部からはアクセスできないまま、継承先のクラスではアクセスさせることができる。そうすることで、プロパティのオーバーライドができる。
+class Practice {
+  constructor(
+    public id: string,
+    public name: string,
+    protected members: string[]
+  ) {}
+
+  addMember(newMember: string) {
+    this.members.push(newMember);
+  }
+
+  showMembers() {
+    console.log(this.members);
+  }
+}
+
+class SecondPractice extends Practice {
+  constructor(id: string) {
+    super(id, "Second", []);
+  }
+
+  addMember(newMember: string) {
+    if (newMember === "Foo") {
+      return;
+    }
+    this.members.push(newMember);
+  }
+}
+
+const secondPractice = new SecondPractice("Second");
+secondPractice.addMember("Max");
+secondPractice.addMember("Foo");
+
+secondPractice.showMembers(); // ["Max"]
+
+# GetterとSetter
+privateを設定したプロパティは基本的に外部から値を取り出したり、セットしたりすることはできない。しかし、ゲッターやセッターをクラス内に定義することでそれができるようになる。
+
+class Practice {
+  constructor(private members: string[]) {}
+
+  // Getterの定義
+  get mostRecentPracticeMember() {
+    return this.members[0];
+  }
+
+  // Setterの定義
+  set mostRecentPracticeMember(newMember: string) {
+    this.members.push(newMember);
+  }
+
+  addMember(newMember: string) {
+    this.members.push(newMember);
+  }
+}
+
+const practice = new Practice([]);
+
+// セッターを使う
+practice.mostRecentPracticeMember = "Max";
+
+// ゲッターを使う
+practice.mostRecentPracticeMember;  // "Max"
+
+# staticプロパティ、staticメソッド
+クラスの中に記述することで、インスタンス化せずにプロパティ、メソッドを使うことができる。
+class Sample {
+  static foo = "bar"
+
+  static hoge(name: string) {
+    return { huga: name }
+  }
+}
+
+Sample.foo // "bar"
+Sample.hoge("hogehoge") // { name: hogehoge }
+
+# abstract(抽象)
+継承されたクラス側で何らかのメソッドを強制的に定義してほしいときに使える。abstractをつけたクラスはインスタンス化できないので注意。それを継承したサブクラスは問題なくインスタンス化できる。
+
+// ベースクラス側の定義
+abstract class Sample {
+  constructor ( ... ) {
+    ...
+  }
+
+  // こう定義すると、子クラスではfoobarという名前のメソッド、引数には
+  abstract foobar(this: Sample): void
+}
