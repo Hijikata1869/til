@@ -251,3 +251,14 @@ abstract class Sample {
   // こう定義するとサブクラスではここに定義されている通りのメソッドを実装しなければならない。つまりというメソッド名はfoobar、thisのオブジェクトはSampleクラスか、Sampleクラスを継承したサブクラスである必要がある。そして、戻り値はvoid、つまり何も返さない実装にする必要がある。
   abstract foobar(this: Sample): void
 }
+
+# シングルトンパターン
+シングルトンとは、オブジェクト指向プログラミングにおけるクラスのデザインパターンの一つで、実行時にそのクラスのインスタンスが必ず単一になるよう設計すること。（参考：https://e-words.jp/w/%E3%82%B7%E3%83%B3%E3%82%B0%E3%83%AB%E3%83%88%E3%83%B3.html）
+
+typescriptで実装する場合、constructorにprivateをつける。
+
+class Sample {
+  private constructor ( ... ) {
+    ...
+  }
+}
