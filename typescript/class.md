@@ -21,6 +21,7 @@ accounting.describe(); // "Department: Accounting"
 // 以下はオブジェクトリテラルに基づいて作成されたオブジェクトであり、クラスに基づいて作成されたオブジェクトではない。
 // describeプロパティの値にはdescribeメソッドの実行結果ではなく、describeメソッドそのものを渡している。(実行結果を渡したければdescribe()と()をつける)
 // そのため、nameプロパティが抜けているとDepartmentクラスと構造が異なるため、以下で実行しているaccountingCopyのdescribeメソッドはエラーになる
+// 逆に言えば構造さえ一緒なら参照先がDepartmentクラスのインスタンスでなくとも良い？要調査
 const accountingCopy = { name: "DUMMY", describe: accounting.describe };
 
 accountingCopy.describe(); // "Department: Accounting"
@@ -239,7 +240,7 @@ Sample.foo // "bar"
 Sample.hoge("hogehoge") // { name: hogehoge }
 
 # abstract(抽象)
-継承されたクラス側で何らかのメソッドを強制的に定義してほしいときに使える。abstractをつけたクラスはインスタンス化できないので注意。それを継承したサブクラスは問題なくインスタンス化できる。
+継承されたクラス側で何らかのメソッドを強制的に定義、オーバーライドしてほしいときに使える。abstractをつけたクラスはインスタンス化できないので注意。それを継承したサブクラスは問題なくインスタンス化できる。抽象化(abstructをつけた)したクラスで抽象化したメソッドを定義した場合、継承先のクラスではそのメソッドを定義しないとエラーになる。
 
 // ベースクラス側の定義
 abstract class Sample {
@@ -247,6 +248,6 @@ abstract class Sample {
     ...
   }
 
-  // こう定義すると、子クラスではfoobarという名前のメソッド、引数には
+  // こう定義するとサブクラスではここに定義されている通りのメソッドを実装しなければならない。つまりというメソッド名はfoobar、thisのオブジェクトはSampleクラスか、Sampleクラスを継承したサブクラスである必要がある。そして、戻り値はvoid、つまり何も返さない実装にする必要がある。
   abstract foobar(this: Sample): void
 }
