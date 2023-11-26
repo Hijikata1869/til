@@ -112,3 +112,6 @@ const, let, テンプレート文字列、アロー関数、分割代入、デ�
 
 # 11/2
 vanilla javascriptでTODOアプリを作成
+
+# 11/26
+typescript復讐
