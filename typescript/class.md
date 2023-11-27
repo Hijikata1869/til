@@ -7,7 +7,7 @@ class Department {
   }
 
   // describeメソッドを定義
-  // この引数thisに, Departmentという型定義が意味することは、describe()が実行されたとき、thisは常にDepartmentクラスをベースにしたインスタンスを参照する必要があるということ
+  // この引数thisに, Departmentという型定義が意味することは、describe()が実行されたとき、thisは常にDepartmentクラスをベースにしたインスタンスを参照する必要があるということ。Departmentクラスベースのインスタンスでない場合は、同じ構造のオブジェクトを参照する必要がある。この場合、string型のnameプロパティがあり、describeメソッドが実装されているということ。
   describe(this: Department) {
     console.log("Department: " + this.name);
   }
@@ -21,7 +21,7 @@ accounting.describe(); // "Department: Accounting"
 // 以下はオブジェクトリテラルに基づいて作成されたオブジェクトであり、クラスに基づいて作成されたオブジェクトではない。
 // describeプロパティの値にはdescribeメソッドの実行結果ではなく、describeメソッドそのものを渡している。(実行結果を渡したければdescribe()と()をつける)
 // そのため、nameプロパティが抜けているとDepartmentクラスと構造が異なるため、以下で実行しているaccountingCopyのdescribeメソッドはエラーになる
-// 逆に言えば構造さえ一緒なら参照先がDepartmentクラスのインスタンスでなくとも良い？要調査
+// 逆に言えば構造さえ一緒なら参照先がDepartmentクラスのインスタンスでなくとも良い
 const accountingCopy = { name: "DUMMY", describe: accounting.describe };
 
 accountingCopy.describe(); // "Department: Accounting"
@@ -32,8 +32,7 @@ accountingCopy.describe(); // "Department: Accounting"
 
 # private, public修飾子
 class Department {
-  // アクセス修飾子はpublicとprivateの２つがあり、publicはデフォルトなので基本的に記載する必要はない。publicの場合クラスの外からアクセスすることができる。
-  // 学習のためわざと書いている。
+  // アクセス修飾子はpublicとprivateの２つがあり、publicはデフォルトなので基本的に記載する必要はない。publicの場合クラスの外からアクセスすることができる。学習のためわざと書いている。
   public name: string;
   private employees: string[] = [];
 
@@ -56,7 +55,7 @@ class Department {
 }
 
 const accounting = new Department("Accounting");
-accounting.name = "NEW DEPARTMENT" // 動作する
+accounting.name = "NEW DEPARTMENT" // 動作する。nameプロパティが "NEW DEPARTMENT" になる。
 accounting.employees[2] = "Anna" // employeesは外部からアクセスできないのでエラーになる。
 
 # プロパティ初期化のショートカット構文
@@ -121,7 +120,7 @@ class ITDepartment extends Department {
   ...
 }
 
-このようにextendsキーワードを使うことでベースクラス(継承元)を参照した新しいクラスを作成することができる。継承は1つのクラスからしか継承できない。複数のクラスから継承することはできない。
+このようにextendsキーワードを使うことでベースクラス(継承元)を参照した新しいクラスを作成することができる。クラスの継承は1つのクラスからしか継承できない。複数のクラスから継承することはできない。
 クラスを継承すると、継承先でconstructorを定義していなければ、継承元のconstructorが使われ、自動的に継承元となったクラスのプロパティやメソッドを引き継ぐ。
 
 # super
