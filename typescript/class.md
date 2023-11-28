@@ -230,8 +230,8 @@ practice.mostRecentPracticeMember;  // "Max"
 class Sample {
   static foo = "bar"
 
-  static hoge(name: string) {
-    return { huga: name }
+  static hoge(huga: string) {
+    return { name: huga }
   }
 }
 
