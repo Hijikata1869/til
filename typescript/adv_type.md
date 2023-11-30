@@ -156,7 +156,7 @@ userInputElement.value = "こんにちは";
 const userInputElement = document.getElementById("user-input");
 
 if (userInputElement) {
-  // .valueの前に()をつける
+  // .valueの前まで()で囲む
   (userInputElement as HTMLInputElement).value = "こんにちは";
 }
 
@@ -165,7 +165,7 @@ if (userInputElement) {
 # インデックス型
 インデックス型を用いる場合、オブジェクトのプロパティ名にどのような名前があるかやいくつのプロパティが必要か、ということをあらかじめ把握しておく必要はない。
 
-// プロパティ名はstring型に変換できるものならなんでも良い。１などの数字であってもnumber型に変換できるので使える。逆（string -> number）はできないので使えない。booleanも使えない。
+// プロパティ名はstring型に変換できるものならなんでも良い。1などの数字であってもstring型に変換できるので使える。逆（string -> number）はできないので使えない。booleanも使えない。
 interface ErrorContainer {
   [prop: string]: string;
 }
@@ -204,7 +204,7 @@ const foo = '';
 
 const bar = foo || 'baz';
 console.log(bar) // baz
-これで事足りる。しかし、空文字をfalsy判定をnullとundefinedだけにしたい場合
+これで事足りる。しかし空文字をfalsy判定せず、nullとundefinedだけにしたい場合
 
 const foo = '';
 const bar = foo ?? 'baz';
