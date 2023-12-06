@@ -1,4 +1,5 @@
 # クラス
+// Departmentクラスを定義
 class Department {
   name: string;
 
@@ -8,6 +9,7 @@ class Department {
 
   // describeメソッドを定義
   // この引数thisに, Departmentという型定義が意味することは、describe()が実行されたとき、thisは常にDepartmentクラスをベースにしたインスタンスを参照する必要があるということ。Departmentクラスベースのインスタンスでない場合は、同じ構造のオブジェクトを参照する必要がある。この場合、string型のnameプロパティがあり、describeメソッドが実装されているということ。
+  // thisは引数の記述となっているが、このメソッドを呼び出す時に何か引数を渡す必要はない
   describe(this: Department) {
     console.log("Department: " + this.name);
   }
@@ -28,7 +30,7 @@ accountingCopy.describe(); // "Department: Accounting"
 
 # this
 クラスの中のthisというキーワードは基本的にその関数を呼び出すための責任があろうオブジェクトを参照する。
-上の例で言えば、describeメソッドのthisは.(ドット)の前にあるものを参照することになる。19行目ならDepartmentクラスベースのオブジェクトを、26行目ならオブジェクトリテラルで作られた、Departmentクラスベースでないオブジェクトを参照している。
+上の例で言えば、describeメソッドのthisは.(ドット)の前にあるものを参照することになる。21行目ならDepartmentクラスベースのオブジェクトを、29行目ならオブジェクトリテラルで作られた、Departmentクラスベースでないオブジェクトを参照している。
 
 # private, public修飾子
 class Department {
@@ -144,7 +146,7 @@ class Practice {
 
 class SecondPractice extends Practice {
   constructor(id: string) {
-    super(id, "Second"); // id: "d1", name: "Second"
+    super(id, "Second"); // id: "インスタンス化された時に定義した値", name: "Second"
   }
 }
 
@@ -247,7 +249,7 @@ abstract class Sample {
     ...
   }
 
-  // こう定義するとサブクラスではここに定義されている通りのメソッドを実装しなければならない。つまりというメソッド名はfoobar、thisのオブジェクトはSampleクラスか、Sampleクラスを継承したサブクラスである必要がある。そして、戻り値はvoid、つまり何も返さない実装にする必要がある。
+  // こう定義するとサブクラスではここに定義されている通りのメソッドを実装しなければならない。つまりというメソッド名はfoobar、thisのオブジェクトはSampleクラスか、Sampleクラスを継承したサブクラスである必要がある。そして、戻り値はvoid、つまり何も返さないメソッドを実装する必要がある。
   abstract foobar(this: Sample): void
 }
 
