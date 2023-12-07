@@ -115,3 +115,6 @@ vanilla javascriptでTODOアプリを作成
 
 # 11/26
 typescript復讐
+
+# 12/6
+病み上がり。これまでのTypeScriptで勉強した箇所を復習。
