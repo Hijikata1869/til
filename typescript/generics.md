@@ -31,7 +31,7 @@ function merge(objA: object, objB: object) {
 const mergedObj = merge({ name: "Max" }, { age: 30 }); // {name: "Max", age: 30}
 
 mergedObj.name // エラー
-// nameプロパティが存在するにもかかわらずエラーになる。typescriptはこのオブジェクトの型をオブジェクトとしてしか認識していないから。型キャストで型をTypeScriptに伝えることもできるが非常に面倒。このようなときにジェネリック型が便利。
+// nameプロパティが存在するにもかかわらずエラーになる。typescriptはこのオブジェクトの型をオブジェクトとしてしか認識していないから。つまり、プロパティとしてどんな値が存在するかなどはわかっていない。型キャストで型をTypeScriptに伝えることもできるが非常に面倒。このようなときにジェネリック型が便利。
 
 // mergeに追加する識別子は通常はType(型)から取って、Tからスタートする。任意のものを使うことができるし、一つだけでなくともいい。慣習的にはTからスタートし、アルファベット順に次はUになる。
 // 下記の実装だとTypeScriptの型推論の結果は "function merge<T, U>(objA: T, objB: U): T & U" と交差型を返す型推論になる。
@@ -49,13 +49,15 @@ const mergedObj = merge({ name: "Max", hobbies: ["sports"] }, { age: 30 }); // �
 
 
 # 制約付きのGeneric型
-// オブジェクトの中身の型はわからないが、とにかくobjectであることを示したい場合はextendsキーワードを使って制約を追加することができる。
+```
+// どんな構造のオブジェクトでも構わないが、とにかくobjectであることを示したい場合はextendsキーワードを使って制約を追加することができる。
 function merge<T extends object, U extends object>(objA: T, objB: U) {
   return Object.assign(objA, objB);
 }
 
 const mergedObj = merge({ name: "Max" }, 30); // エラー
 const mergedObj = merge({ name: "Max" }, { age: 30 }); // 正しく動作する
+```
 
 extendsの後にはどんな方でも参照できる。string, numberはもちろんPersonといった独自の型や、string | numberなどのユニオン型でも良い。とても柔軟。
 

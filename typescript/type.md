@@ -20,7 +20,7 @@ const person = {
 # 配列の型指定
 const foo = ["bar", "baz"]
 のような配列に型を指定する場合、
-foo: string[] = ["bar", "baz"]
+const foo: string[] = ["bar", "baz"]
 と型を指定する。
 
 # Tuple型
