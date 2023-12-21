@@ -41,3 +41,64 @@ const { nickname, age } = person;
 const { nickname: userName, age } = person;
 
 console.log(userName, age ) // 'Max', 30
+
+
+
+# オブジェクトのプロパティへのアクセス方法
+## ドット記法
+.（ドット）を使ってプロパティにアクセスする記法です。
+```
+const obj = {};
+obj.name = 'taka'; // objのプロパティをセット
+obj.hello = function(){
+    console.log(`Hello,${this.name}`);
+}
+
+console.log(obj.name); // taka
+obj.hello(); // Hello,taka
+```
+オブジェクトとプロパティを.（ドット）で繋げることで、値の取得やメソッド実行ができます。
+
+## ブラケット記法
+[ ]（ブラケット）を使ってプロパティにアクセスする方法です。
+```
+const obj = {};
+obj['name'] = 'taka'; // objのプロパティをセット
+obj['hello'] = function(){
+    console.log(`Hello,${this.name}`);
+}
+
+console.log(obj['name']); // taka
+obj['hello'](); // Hello,taka
+```
+メソッドも[ ]の後に()を付けて関数を実行できます。
+
+## ドット記法とブラケット記法の違い
+ブラケット記法は、プロパティ名に変数を与えることができます。ドット記法ではできません。
+```
+const propName = 'name'; // 変数を用意
+
+const obj = {};
+obj[propName] = 'taka'; // プロパティ名に変数を使う
+console.log(obj); // {name: "taka"}
+
+obj.propName = "taka"; //ドット記法で変数を使ってもプロパティ名になる
+console.log(obj); // {name: "taka",propName: "taka"}
+```
+
+そのため、ブラケット記法はループなど動的にプロパティ名を変更したい場合に便利です。
+例えば、配列にキーを格納して、オブジェクトの中身を取得した時など。
+
+```
+const key = ['html','css','javascript'];
+const obj = {
+    html:'骨組み',
+    css:'装飾',
+    javascript:'動作'
+}
+
+key.forEach(function(key){
+    let result = key + 'は、Webページの' + obj[key] + 'を作ります。'
+    console.log(result);
+});
+```

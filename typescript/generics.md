@@ -64,6 +64,7 @@ extendsの後にはどんな方でも参照できる。string, numberはもち�
 
 
 # もう一つのGeneric関数
+```
 interface Lengthy {
   length: number;
 }
@@ -76,3 +77,22 @@ function countAndDescribe<T extends Lengthy>(element: T): [T, string] {
   return [element, descriptionText];
 }
 Lengthyインターフェースを実装することで、Tの型がなんであれlengthプロパティを持っていることが保証される。Lengthyがなければlengthの部分でエラーが出る。number型はlengthプロパティを持っていないため、countAndDescribeの引数にnumber型を入れようとするとエラーになる。
+```
+
+
+# keyofの制約
+```
+function extractAndConvert(obj: object, key: string) {
+  return "Value " + obj[key] // keyがobjのプロパティ名であることが保証されていないため、エラーになる
+}
+
+function extractAndConvert<T extends object, U extends keyof T>(
+  obj: T,
+  key: U
+) {
+  return "Value: " + obj[key];
+}
+// U extends keyof Tとすることで、TはU(1つ目のオブジェクト)のプロパティとして存在しなければならないことを保証できる。
+
+console.log(extractAndConvert({ name: "max"}, name)) // "Value: max"
+```
