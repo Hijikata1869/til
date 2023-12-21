@@ -92,7 +92,7 @@ function extractAndConvert<T extends object, U extends keyof T>(
 ) {
   return "Value: " + obj[key];
 }
-// U extends keyof Tとすることで、TはU(1つ目のオブジェクト)のプロパティとして存在しなければならないことを保証できる。
+// U extends keyof Tとすることで、UはT(1つ目のオブジェクト)のプロパティとして存在しなければならないことを保証できる。
 
 console.log(extractAndConvert({ name: "max"}, name)) // "Value: max"
 ```
