@@ -24,6 +24,7 @@ promise.then(data => {
 
 
 # Generic関数の作成
+```
 function merge(objA: object, objB: object) {
   return Object.assign(objA, objB);
 }
@@ -42,9 +43,10 @@ function merge<T, U>(objA: T, objB: U) {
 // mergedObjにカーソルを当てると const mergedObj: { name: string; } & { age: number; }と、TypeScriptが認識している。
 const mergedObj = merge({ name: "Max" }, { age: 30 });
 
-// なぜ最初のobject型ではダメだったのか？それは、object型がとても曖昧な型だから。objectであればなんでも良く、typescriptに有用な情報を提供していないから。一方でジェネリックの記述だと2つのパラメータが異なる可能性のある型だということを伝えることができる。それにより異なった型のオブジェクトを受け取り、その交差型を返すということをTypeScriptが理解することができる。TとUが同じ型であっても問題はない。
+// なぜ最初のobject型ではダメだったのか？それは、object型がとても曖昧な型だから。objectであればなんでも良く、typescriptに有用な情報を提供していない。一方でジェネリックの記述だと2つのパラメータが異なる可能性のある型だということを伝えることができる。それにより異なった型のオブジェクトを受け取り、その交差型を返すということをTypeScriptが理解することができる。TとUが同じ型であっても問題はない。
 
 const mergedObj = merge({ name: "Max", hobbies: ["sports"] }, { age: 30 }); // こういった定義もできる。
+```
 
 
 
