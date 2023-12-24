@@ -61,7 +61,7 @@ const mergedObj = merge({ name: "Max" }, 30); // エラー
 const mergedObj = merge({ name: "Max" }, { age: 30 }); // 正しく動作する
 ```
 
-extendsの後にはどんな方でも参照できる。string, numberはもちろんPersonといった独自の型や、string | numberなどのユニオン型でも良い。とても柔軟。
+extendsの後にはどんな型でも参照できる。string, numberはもちろんPersonといった独自の型や、string | numberなどのユニオン型でも良い。とても柔軟。
 
 
 
