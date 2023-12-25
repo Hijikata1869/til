@@ -102,3 +102,29 @@ key.forEach(function(key){
     console.log(result);
 });
 ```
+
+
+# indexOf
+```
+indexOf() は Array インスタンスのメソッドで、引数に与えられた内容と同じ内容を持つ最初の配列要素の添字を返します。存在しない場合は -1 を返します。
+const beasts = ['ant', 'bison', 'camel', 'duck', 'bison'];
+
+console.log(beasts.indexOf('bison'));
+// Expected output: 1
+```
+
+
+# splice
+```
+splice() は Array インスタンスのメソッドは、その場 (in-place) で既存の要素を取り除いたり、置き換えたり、新しい要素を追加したりすることで、配列の内容を変更します。
+
+// 構文
+splice(start, deleteCount)
+
+// 引数
+start
+配列の変更を始める位置のゼロから始まるインデックスで、整数に変換されます。
+
+deleteCount
+配列の start の位置から取り除く古い要素の個数を示す整数です。
+```

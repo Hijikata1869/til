@@ -98,3 +98,65 @@ function extractAndConvert<T extends object, U extends keyof T>(
 
 console.log(extractAndConvert({ name: "max"}, name)) // "Value: max"
 ```
+
+
+
+# genericクラス
+```
+// クラス名の後ろに山かっこをつけると、genericクラスを定義できる。このクラスの場合itemの型について、クラス自身は何の関心もない。このクラスではitemの型が統一されていることだけを保証したい。
+class DataStorage<T> {
+  private data: T[] = []; // T型の配列
+
+  addItem(item: T) {
+    this.data.push(item);
+  }
+
+  removeItem(item: T) {
+    this.data.splice(this.data.indexOf(item), 1);
+  }
+
+  getItems() {
+    return [...this.data];
+  }
+}
+
+// string型に特化したストレージを作成
+const textStorage = new DataStorage<string>();
+const textStrage = new DataStorage();
+textStrage.addItem("data1");
+textStrage.addItem("data2");
+textStrage.removeItem("data2");
+console.log(textStrage.getItems()); // ["data1"]
+
+textStrage.addItem(100); // エラー
+
+// なぜジェネリック型のクラスを使うのか？それは、このストレージをstring型以外の型でも使いたいかもしれないから。number型のデータ型を格納したければnew DataStorage<number>()とすれば良いし、stringかnumber型にしたければnew DataStorage<string | number>()とすれば良い。
+// 上で作成したジェネリッククラスはプリミティブ型に対してはうまく動作する。しかし万能ではない。参照型(オブジェクトや配列)に対してはうまく動作しないから。オブジェクトや配列に対してはそれに特化したクラスを作るのがいいかもしれない。
+// プリミティブ型だけに宣言したい場合は下記のように定義する
+class DataStorage<T extends string | number | boolean> {
+  ...
+}
+
+// ジェネリック型は複数指定することもできる
+class DataStorage<T, U> {
+  ...
+}
+
+// クラスの中でメソッドだけの独自のジェネリック型を追加することもできる。
+class DataStorage<T> {
+  private data: T[] = []; // T型の配列
+
+  addItem<U>(item: T) {   // メソッド独自のジェネリック型
+    this.data.push(item);
+  }
+
+  removeItem(item: T) {
+    this.data.splice(this.data.indexOf(item), 1);
+  }
+
+  getItems() {
+    return [...this.data];
+  }
+}
+
+```
