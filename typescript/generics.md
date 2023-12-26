@@ -122,7 +122,6 @@ class DataStorage<T> {
 
 // string型に特化したストレージを作成
 const textStorage = new DataStorage<string>();
-const textStrage = new DataStorage();
 textStrage.addItem("data1");
 textStrage.addItem("data2");
 textStrage.removeItem("data2");
