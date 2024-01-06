@@ -204,7 +204,7 @@ const foo = '';
 
 const bar = foo || 'baz';
 console.log(bar) // baz
-これで事足りる。しかし空文字をfalsy判定せず、nullとundefinedだけにしたい場合
+これで事足りる。しかし空文字をfalsy判定せず、nullとundefinedだけをfalse判定にしたい場合
 
 const foo = '';
 const bar = foo ?? 'baz';
