@@ -128,3 +128,62 @@ start
 deleteCount
 配列の start の位置から取り除く古い要素の個数を示す整数です。
 ```
+
+
+# HTMLTemplateElement: content プロパティ
+HTMLTemplateElement.content プロパティは、<template> 要素のテンプレートの内容 (DocumentFragment) を返します。
+
+## DocumentFragmentとは？
+DocumentFragment インターフェイスは、親ノードを持たない最小限の文書オブジェクト（文書フラグメント）を表します。
+これは Document の軽量版として使用され、標準の文書のようにノードで構成される文書構造の一区間を格納します。重要な違いは、文書フラグメントがアクティブな文書ツリー構造の一部ではないことです。フラグメントに対して変更を行っても、文書には影響しません。
+→ 文書構造の一区間を格納しているに過ぎないから、documentより軽いですよってことかな？
+
+
+
+# Document.importNode()
+Document オブジェクトの importNode() メソッドは、後で現在の文書に挿入するために、他の文書から Node または DocumentFragment の複製を作成します。インポートされたノードは、まだ文書ツリーには含まれません。これを含めるには、 appendChild() や insertBefore() のような挿入メソッドを、現在の文書ツリーに存在するノードに対して呼び出す必要があります。document.adoptNode() とは異なり、元の文書から元のノードは削除されません。インポートされたノードは元のノードの複製です。
+## 構文
+importNode(externalNode);
+importNode(externalNode, deep);
+## 引数
+externalNode
+  現在の文書にインポートする、外部の Node または DocumentFragment です。
+
+deep(省略可)
+  論理値のフラグで、既定値は false であり、externalNode の DOM サブツリー全体をインポートするかどうかを制御します。
+  deep が true に設定された場合、 externalNode およびその子孫全てが複製されます。
+  deep が false に設定された場合、 externalNode のみがインポートされます — 新しいノードには子ノードはない状態になります。
+## 例
+```
+const importedNode = document.importNode(
+  this.templateElement.content,
+  true
+);
+```
+
+
+
+# Element: insertAdjacentElement() メソッド
+insertAdjacentElement() は Element インターフェイスのメソッドで、呼び出された要素から相対的に指定された位置に、指定された要素ノードを挿入します。
+## 構文
+insertAdjacentElement(position, element)
+## 引数
+position
+  文字列で、 targetElement の相対位置を表します。以下の何れかの文字列と一致する必要があります（大文字小文字の区別なし）。
+  'beforebegin': targetElement 自体の前。
+  'afterbegin': targetElement の直下、最初の子の前。
+  'beforeend': targetElement の直下、最後の子の後。
+  'afterend': targetElement 自体の後。
+
+element
+  ツリーに挿入する要素です。
+## position の名前の視覚化
+```HTML
+<!-- beforebegin -->
+<p>
+  <!-- afterbegin -->
+  foo
+  <!-- beforeend -->
+</p>
+<!-- afterend -->
+```
