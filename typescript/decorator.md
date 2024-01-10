@@ -145,6 +145,7 @@ function Log(target: any, propertyName: string | symbol) {
 
 // 外から読み書きしてほしくないプロパティをアンダーバーで開始するのはただの慣習であるため、構文としての意味はない。(下の_price)
 class Product {
+  // プロパティに追加したデコレータ
   @Log
   title: string;
   private _price: number;
@@ -163,6 +164,115 @@ class Product {
   }
 
   getPriceWithTax(tax: number) {
+    return this._price * (1 + tax);
+  }
+}
+```
+
+## アクセサー
+デコレータはアクセサーにも追加できる。アクセサーのデコレータ関数は引数を３種類受け取る。プロパティと同じ。2つ目はアクセサーの名前。3つ目はPropertyDescriptor(プロパティ記述子)。
+```
+function Log2(target: any, name: string, descriptor: PropertyDescriptor) {
+  console.log("Accessor デコレータ");
+  console.log(target);
+  console.log(name);
+  console.log(descriptor);
+}
+
+class Product {
+  title: string;
+  private _price: number;
+
+  // アクセサーに追加したデコレータ
+  @Log2
+  set price(val: number) {
+    if (val > 0) {
+      this._price = val;
+    } else {
+      throw new Error("不正な価格です。 - 0以下は設定できません");
+    }
+  }
+
+  constructor(t: string, p: number) {
+    this.title = t;
+    this._price = p;
+  }
+
+  getPriceWithTax(tax: number) {
+    return this._price * (1 + tax);
+  }
+}
+```
+
+## メソッド
+アクセサーとメソッドの引数はほぼ同じ。ディスクリプターの中身が若干違う。
+```
+function Log3(
+  target: any,
+  name: string | symbol,
+  descriptor: PropertyDescriptor
+) {
+  console.log("Method デコレータ");
+  console.log(target);
+  console.log(name);
+  console.log(descriptor);
+}
+
+class Product {
+  title: string;
+  private _price: number;
+
+  set price(val: number) {
+    if (val > 0) {
+      this._price = val;
+    } else {
+      throw new Error("不正な価格です。 - 0以下は設定できません");
+    }
+  }
+
+  constructor(t: string, p: number) {
+    this.title = t;
+    this._price = p;
+  }
+
+  // メソッドに追加したデコレータ
+  @Log3
+  getPriceWithTax(tax: number) {
+    return this._price * (1 + tax);
+  }
+}
+```
+
+## パラメータ
+パラメータの直前につけて使うことができる。1つのパラメーターだけでなく、全てのパラメーターに使える。引数はtarget, name, position。
+```
+function Log4(target: any, name: string | symbol, position: number) {
+  console.log("Parameter デコレータ");
+  console.log(target);
+  console.log(name);
+  console.log(position);
+}
+
+class Product {
+  @Log
+  title: string;
+  private _price: number;
+
+  @Log2
+  set price(val: number) {
+    if (val > 0) {
+      this._price = val;
+    } else {
+      throw new Error("不正な価格です。 - 0以下は設定できません");
+    }
+  }
+
+  constructor(t: string, p: number) {
+    this.title = t
+    this._price = p;
+  }
+
+  getPriceWithTax(@Log4 tax: number) { // パラメータに追加したデコレータ
     return this._price * (1 + tax);
   }
 }
