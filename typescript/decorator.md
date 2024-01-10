@@ -131,3 +131,39 @@ class Person {
 Personオブジェクトを作成中
 
 の順で表示される。
+
+
+
+# デコレータを追加できる場所
+## プロパティ
+デコレータはプロパティにも追加できる。プロパティのデコレータ関数は引数を２種類受け取る。1つ目の引数には、インスタンスのプロパティにデコレータを設定した場合、クラスのプロトタイプが渡される。インスタンスプロパティではなく、スタティックプロパティに設定した場合は、コンストラクタ関数が渡される。2つ目はプロパティの名前。
+```
+function Log(target: any, propertyName: string | symbol) {
+  console.log("Property デコレータ");
+  console.log(target, propertyName);
+}
+
+// 外から読み書きしてほしくないプロパティをアンダーバーで開始するのはただの慣習であるため、構文としての意味はない。(下の_price)
+class Product {
+  @Log
+  title: string;
+  private _price: number;
+
+  set price(val: number) {
+    if (val > 0) {
+      this._price = val;
+    } else {
+      throw new Error("不正な価格です。 - 0以下は設定できません");
+    }
+  }
+
+  constructor(t: string, p: number) {
+    this.title = t;
+    this._price = p;
+  }
+
+  getPriceWithTax(tax: number) {
+    return this._price * (1 + tax);
+  }
+}
+```
