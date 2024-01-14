@@ -280,3 +280,43 @@ class Product {
 
 # クラスデコレータによるクラスの変更
 いくつかのデコレータは、値を返すことができる。例えばクラスデコレータや、メソッドデコレータ。クラスに追加されるデコレータはコンストラクタ関数を返すことができる。つまり、デコレータ関数が受け取ったコンストラクタ関数を別のものに置き換えることができる。これはコンストラクタ関数を返すか、シンプルにクラスを返す。そのクラスに名前をつける必要はなく、受け取ったコンストラクタ関数をextendsキーワードで継承することができる。
+```
+function WithTemplate(template: string, hookId: string) {
+  console.log("TEMPLATE ファクトリ");
+  // このジェネリック型はクラスを受け取る必要がある。
+  // {new}はTypeScriptにこれはオブジェクトだが、newキーワードを使ってインスタンスを作れるもの、つまりコンストラクタ関数であるということを伝えることができる。
+  // このnew関数は任意の数の引数を受け取ることができる。なので、レストパラメータを使っている。型はanyの配列。これによりコンストラクタ関数の引数に対して非常に柔軟な型を定義している。
+  // このnew関数はなんらかのオブジェクトを返す。この引数は新しいクラスのコンストラクタ関数に渡す必要がある。これによって全てのコンストラクタ関数の引数を受け取って、元のコンストラクタ関数に渡すことができる。ここではPersonクラスのインスタンス化をするときにPersonクラスに必要なコンストラクタの引数を渡せるようになる。
+  // new関数の戻り値の型にname: stringを入れることによって、nameプロパティがあるオブジェクトを返す、ということを定義している。これにより、関数の中でnameプロパティにアクセスすることができる。
+  return function <T extends { new (...args: any[]): { name: string } }>(
+    originalConstructor: T
+  ) {
+    // 内側のデコレータ関数で、新しいクラスを返している。そのクラスにはオリジナルのクラスのメソッドやプロパティが引き継がれる。
+    // 新しいクラスを返しているので、DOMへの表示ロジックは、クラスをインスタンス化した際に実行される。
+    return class extends originalConstructor {
+      constructor(..._: any[]) {
+        // 継承したクラスでコンストラクタ関数を追加した場合には、super()を呼び出す必要がある。superを呼ぶとオリジナルのコンストラクタ関数が呼び出される。
+        super();
+        console.log("テンプレートを表示");
+        const hookEl = document.getElementById(hookId);
+        if (hookEl) {
+          hookEl.innerHTML = template;
+          hookEl.querySelector("h1")!.textContent = this.name;
+        }
+      }
+    };
+  };
+}
+
+@WithTemplate("<h1>Personオブジェクト</h1>", "app")
+class Person {
+  name = "Max";
+
+  constructor() {
+    console.log("Personオブジェクトを作成中");
+  }
+}
+
+const pers = new Person();
+これにより、画面にこの場合、h1タグで囲まれたMaxが表示される。
+```
