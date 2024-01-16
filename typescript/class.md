@@ -8,7 +8,7 @@ class Department {
   }
 
   // describeメソッドを定義
-  // この引数thisに, Departmentという型定義が意味することは、describe()が実行されたとき、thisは常にDepartmentクラスをベースにしたインスタンスを参照する必要があるということ。Departmentクラスベースのインスタンスでない場合は、同じ構造のオブジェクトを参照する必要がある。この場合、string型のnameプロパティがあり、describeメソッドが実装されているということ。
+  // この引数thisに, Departmentという型定義が意味することは、describe()が実行されたとき、thisは常にDepartmentクラスをベースにしたインスタンスを参照する必要があるということ。Departmentクラスベースのインスタンスでない場合は、同じ構造のオブジェクトを参照する必要がある。同じ構造とはこの場合、string型のnameプロパティがあり、describeメソッドが実装されているということ。
   // thisは引数の記述となっているが、このメソッドを呼び出す時に何か引数を渡す必要はない
   describe(this: Department) {
     console.log("Department: " + this.name);
