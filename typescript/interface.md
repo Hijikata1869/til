@@ -32,7 +32,7 @@ interface Greetable {
   greet(phrase: string): void;
 }
 
-// ここではGreetableインターフェースの構造、つまりGreetableインターフェースで定義した型通りのプロパティを持たせないとエラーになる。
+// ここではGreetableインターフェースの構造、つまりGreetableインターフェースで定義した型通りのプロパティやメソッドを持たせないとエラーになる。
 // ただし、Greetableインターフェースに存在しないプロパティを追加することは可能
 // また、クラスの継承と違い、インターフェースは複数実装できる
 class Person implements Greetable {
