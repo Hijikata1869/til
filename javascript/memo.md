@@ -187,3 +187,8 @@ element
 </p>
 <!-- afterend -->
 ```
+
+
+
+# propertyDescriptorに関する参考リンク
+https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty

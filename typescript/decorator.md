@@ -170,7 +170,7 @@ class Product {
 ```
 
 ## アクセサー
-デコレータはアクセサーにも追加できる。アクセサーのデコレータ関数は引数を３種類受け取る。1つ目はプロパティと同じ。2つ目はアクセサーの名前。3つ目はPropertyDescriptor(プロパティ記述子)。
+デコレータはアクセサーにも追加できる。アクセサーのデコレータ関数は引数を３種類受け取る。1つ目はプロパティと同じ。2つ目はアクセサーの名前。3つ目はPropertyDescriptor(プロパティ記述子)。PropertyDescriptorは、プロパティをきめ細かく設定できるもの。
 ```
 function Log2(target: any, name: string, descriptor: PropertyDescriptor) {
   console.log("Accessor デコレータ");
@@ -321,4 +321,39 @@ class Person {
 
 const pers = new Person();
 // これにより、画面にこの場合、h1タグで囲まれたMaxが表示される。
+```
+
+
+# その他のデコレータの返却値
+クラスの他には、メソッドデコレータと、アクセサーデコレータで値を返すことができる。この2つのデコレータは、propertyDescriptorを引数として受け取る。PropertyDescriptorは、プロパティを通常よりもよりきめ細かく設定できるもの。
+```typescript
+// メソッドのthisの参照先を常にPersonオブジェクトにバインドするためのデコレータ
+function AutoBind(_: any, _2: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+  const adjDescriptor: PropertyDescriptor = {
+    configurable: true,
+    enumerable: false,
+    get() {
+      // このthisはアクセスしようとしたプロパティを持つオブジェクトになる (プロパティを定義するために作成した記述子オブジェクトではない。この場合はPrinterクラスのオブジェクト)。インスタンス化した後も、このthisは上書きされない。
+      const boundFn = originalMethod.bind(this);
+      return boundFn;
+    },
+  };
+  return adjDescriptor;
+}
+
+class Printer {
+  message = "クリックしました！";
+
+  @AutoBind
+  showMessage() {
+    console.log(this.message);
+  }
+}
+
+const p = new Printer();
+
+// Autobindデコレータを設定していない場合、p.showMessageのthisはbuttonタグを参照するため、コンソールにはundefinedが表示されてしまう。しかし、Autobindデコレータを設定するとthisの参照先がPersonオブジェクトになるため、コンソールには「クリックしました！」が表示される。
+const button = document.querySelector("button")!;
+button.addEventListener("click", p.showMessage);
 ```
