@@ -326,6 +326,7 @@ const pers = new Person();
 
 # その他のデコレータの返却値
 クラスの他には、メソッドデコレータと、アクセサーデコレータで値を返すことができる。この2つのデコレータは、propertyDescriptorを引数として受け取る。PropertyDescriptorは、プロパティを通常よりもよりきめ細かく設定できるもの。
+メソッドデコレータは、propertyDescriptorの設定を値として返すことができる。その戻り値として返すpropertyDescriptorの内容によって元々のメソッドの内容や処理を変えることができる。
 ```typescript
 // メソッドのthisの参照先を常にPersonオブジェクトにバインドするためのデコレータ
 function AutoBind(_: any, _2: string, descriptor: PropertyDescriptor) {
@@ -356,4 +357,104 @@ const p = new Printer();
 // Autobindデコレータを設定していない場合、p.showMessageのthisはbuttonタグを参照するため、コンソールにはundefinedが表示されてしまう。しかし、Autobindデコレータを設定するとthisの参照先がPersonオブジェクトになるため、コンソールには「クリックしました！」が表示される。
 const button = document.querySelector("button")!;
 button.addEventListener("click", p.showMessage);
+```
+
+---------------------------------------------
+
+// プロパティデコレータにバリデーションを実装する例
+```typescript
+interface ValidatorConfig {
+  [prop: string]: {
+    [validatableProp: string]: string[]; // バリデーターのリストを保存。　例：['required', 'positive']
+  };
+}
+
+const registeredValidators: ValidatorConfig = {};
+
+function Required(target: any, propName: string) {
+  /*
+    target.constructor.name === Course
+    propname === title
+
+    Course: {
+      title: ["required"]
+    }
+
+  */
+  registeredValidators[target.constructor.name] = {
+    ...registeredValidators[target.constructor.name],
+    [propName]: ["required"],
+  };
+}
+
+function PositiveNumber(target: any, propName: string) {
+  /*
+    target.constructor.name === Course
+    propname === price
+
+    Course: {
+      price: ["positive"]
+    }
+
+  */
+  registeredValidators[target.constructor.name] = {
+    ...registeredValidators[target.constructor.name], // title: ["required"]
+    [propName]: ["positive"],
+  };
+}
+
+// obj === createdCourse(Courseクラスのインスタンス)
+function validate(obj: any) {
+  const objValidatorConfig = registeredValidators[obj.constructor.name]; // { title: ["required"], price: ["positive"] }
+  if (!objValidatorConfig) {
+    return true;
+  }
+  let isValid = true;
+  // objValidatorConfig === { title: ["required"], price: ["positive"] }, prop === "title", "price"
+  for (const prop in objValidatorConfig) {
+    for (const validator of objValidatorConfig[prop]) {
+      // validator === ["required"], ["positive"]
+      switch (validator) {
+        case "required":
+          isValid = isValid && !!obj[prop];
+          break;
+        case "positive":
+          isValid = isValid && obj[prop] > 0;
+          break;
+      }
+    }
+  }
+  return isValid;
+}
+
+class Course {
+  @Required
+  title: string;
+  @PositiveNumber
+  price: number;
+
+  constructor(t: string, p: number) {
+    this.title = t;
+    this.price = p;
+  }
+}
+
+const courseForm = document.querySelector("form")!;
+courseForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const titleEl = document.getElementById("title") as HTMLInputElement;
+  const priceEl = document.getElementById("price") as HTMLInputElement;
+
+  const title = titleEl.value;
+  const price = +priceEl.value;
+
+  const createdCourse = new Course(title, price);
+
+  if (!validate(createdCourse)) {
+    alert("正しく入力してください");
+    return;
+  }
+
+  console.log(createdCourse);
+});
 ```
