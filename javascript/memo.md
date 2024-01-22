@@ -130,8 +130,6 @@ deleteCount
 ```
 
 
-# HTMLTemplateElement: content プロパティ
-HTMLTemplateElement.content プロパティは、<template> 要素のテンプレートの内容 (DocumentFragment) を返します。
 
 ## DocumentFragmentとは？
 DocumentFragment インターフェイスは、親ノードを持たない最小限の文書オブジェクト（文書フラグメント）を表します。
@@ -160,6 +158,8 @@ const importedNode = document.importNode(
   true
 );
 ```
+# HTMLTemplateElement: content プロパティ
+HTMLTemplateElement.content プロパティは、<template> 要素のテンプレートの内容 (DocumentFragment) を返します。
 
 
 
