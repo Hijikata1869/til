@@ -285,3 +285,6 @@ useEffect を理解する
 # 5/22
 
 next.js のページ間のデータ共有の方法を模索中
+
+# 7/13
+javascriptのFileReaderや、FormDataについて調査
