@@ -288,3 +288,6 @@ next.js のページ間のデータ共有の方法を模索中
 
 # 7/13
 javascriptのFileReaderや、FormDataについて調査
+
+# 7/30
+aws基礎
