@@ -291,3 +291,6 @@ javascriptのFileReaderや、FormDataについて調査
 
 # 7/30
 aws基礎
+
+# 7/31
+aws基礎
