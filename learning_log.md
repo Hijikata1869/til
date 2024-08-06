@@ -309,3 +309,6 @@ aws基礎
 
 # 8/5
 Rspec
+
+# 8/6
+Rspec
