@@ -474,3 +474,6 @@ NotionでDBを作成
 
 # 1/29
 技術選定
+
+# 1/30
+Git/Github
