@@ -477,3 +477,6 @@ NotionでDBを作成
 
 # 1/30
 Git/Github
+
+# 2/2
+新しいMacBookの設定
