@@ -39,3 +39,6 @@ Next.js App routerの学習
 
 # 2025/6/29
 Usersコントローラー作成途中
+
+# 2025/7/10
+devise調査
