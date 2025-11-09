@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GoogleニュースRSS 上位5件ビューア</title>
+  <style>
+    :root { --bg:#0b0f1a; --card:#121827; --muted:#9aa4b2; --text:#e5e7eb; --accent:#60a5fa; }
+    * { box-sizing: border-box }
+    body {
+      margin: 0; background: linear-gradient(180deg,#0b0f1a,#0f172a);
+      color: var(--text); font: 15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      display: grid; place-items: start center; min-height: 100vh; padding: 32px 16px;
+    }
+    .wrap { width: min(960px,100%); }
+    .card {
+      background: color-mix(in oklab, var(--card) 92%, black);
+      border: 1px solid color-mix(in oklab, var(--card) 70%, white 10%);
+      border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    h1 { margin: 0 0 12px; font-size: 22px; letter-spacing:.2px }
+    .muted { color: var(--muted); font-size: 13px; margin-bottom: 16px }
+    .row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 10px; align-items: center }
+    input[type="text"] {
+      width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid #243145;
+      background:#0f1627; color: var(--text); outline: none;
+    }
+    select { padding: 10px 12px; border-radius: 10px; border:1px solid #243145; background:#0f1627; color:var(--text) }
+    button {
+      padding: 12px 16px; border: 0; border-radius: 10px; font-weight: 600; cursor: pointer;
+      background: var(--accent); color: #081325; transition: transform .05s ease;
+    }
+    button:active { transform: translateY(1px) }
+    .results { margin-top: 18px; display: grid; gap: 10px }
+    .item {
+      display: grid; gap: 6px; padding: 14px; border-radius: 12px; background:#0d1424; border:1px solid #22304b;
+    }
+    .item a.title {
+      color: var(--text); text-decoration: none; font-weight: 700;
+    }
+    .item a.title:hover { text-decoration: underline }
+    .meta { color: var(--muted); font-size: 12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+    .badge { padding:2px 6px; border-radius: 999px; background:#13213a; border:1px solid #243145; font-size: 11px }
+    .empty, .error { padding: 18px; background:#201423; border:1px solid #392541; border-radius:12px }
+    .spinner { width:18px; height:18px; border:3px solid #2b3a5a; border-top-color: var(--accent); border-radius:50%; animation: spin 1s linear infinite }
+    .loading { display:flex; gap:10px; align-items:center; padding: 10px 0 }
+    @keyframes spin { to { transform: rotate(360deg) } }
+    footer { margin-top: 14px; color: var(--muted); font-size: 12px }
+    code.small { background:#0f1627; border:1px solid #243145; padding:2px 6px; border-radius:6px }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>GoogleニュースRSS：最新5件だけ表示</h1>
+      <div class="muted">例: <code class="small">Conor Bradley</code>（英語名でも <code class="small">hl=ja&gl=JP</code> 指定で日本語ニュース中心になります）</div>
+
+      <div class="row">
+        <input id="q" type="text" placeholder="検索キーワード（例: Conor Bradley Liverpool）" value="Conor Bradley Liverpool">
+        <select id="hl" title="言語">
+          <option value="ja" selected>hl=ja</option>
+          <option value="en">hl=en</option>
+        </select>
+        <select id="gl" title="地域">
+          <option value="JP" selected>gl=JP</option>
+          <option value="US">gl=US</option>
+          <option value="GB">gl=GB</option>
+        </select>
+        <button id="btn">最新5件を表示</button>
+      </div>
+
+      <div id="status" class="loading" style="display:none">
+        <div class="spinner"></div><div>取得中…</div>
+      </div>
+
+      <div id="results" class="results"></div>
+      <div id="note" class="muted">
+        ※ 直接取得がCORSで拒否された場合、自動で <code class="small">AllOrigins</code> 経由のフォールバックを使います。
+      </div>
+      <footer>ソース: <a href="https://news.google.com/" target="_blank" rel="noreferrer">Google ニュース</a>（RSS検索）</footer>
+    </div>
+  </div>
+
+  <script>
+    const btn = document.getElementById('btn');
+    const qEl = document.getElementById('q');
+    const hlEl = document.getElementById('hl');
+    const glEl = document.getElementById('gl');
+    const statusEl = document.getElementById('status');
+    const resultsEl = document.getElementById('results');
+
+    function buildRSSUrl(q, hl, gl) {
+      const ceid = `${gl}:${hl}`;
+      const qs = new URLSearchParams({ q, hl, gl, ceid });
+      return `https://news.google.com/rss/search?${qs.toString()}`;
+    }
+
+    async function fetchText(url) {
+      // 1) 直接取得を試す
+      try {
+        const r = await fetch(url);
+        if (!r.ok) throw new Error('direct fetch failed');
+        const t = await r.text();
+        // 簡易CORS検知（CORSでもtextは取れないので try/catch で十分）
+        if (!t || t.length < 20) throw new Error('empty');
+        return t;
+      } catch {
+        // 2) CORS回避: AllOrigins フォールバック（JSONで contents を返す）
+        const proxied = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+        const r2 = await fetch(proxied);
+        if (!r2.ok) throw new Error('proxy fetch failed');
+        const j = await r2.json();
+        return j.contents;
+      }
+    }
+
+    function parseRSS(xmlText) {
+      const doc = new DOMParser().parseFromString(xmlText, "application/xml");
+      const parseError = doc.querySelector("parsererror");
+      if (parseError) throw new Error("XML parse error");
+      const items = [...doc.querySelectorAll("channel > item")];
+      return items.map(it => {
+        const title = it.querySelector("title")?.textContent?.trim() || "(no title)";
+        const link = it.querySelector("link")?.textContent?.trim() || "#";
+        const pubDate = it.querySelector("pubDate")?.textContent?.trim() || "";
+        const source = it.querySelector("source")?.textContent?.trim() || "";
+        return { title, link, pubDate, source };
+      });
+    }
+
+    function toDateStr(rfc822) {
+      const d = new Date(rfc822);
+      if (isNaN(d.getTime())) return "";
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const dd = String(d.getDate()).padStart(2,'0');
+      const hh = String(d.getHours()).padStart(2,'0');
+      const mm = String(d.getMinutes()).padStart(2,'0');
+      return `${y}/${m}/${dd} ${hh}:${mm}`;
+    }
+
+    function render(items) {
+      resultsEl.innerHTML = "";
+      if (!items.length) {
+        const div = document.createElement('div');
+        div.className = 'empty';
+        div.textContent = '該当するニュースが見つかりませんでした。キーワードや地域を見直してみてください。';
+        resultsEl.appendChild(div);
+        return;
+      }
+      items.slice(0,5).forEach(({title, link, pubDate, source}) => {
+        const card = document.createElement('div');
+        card.className = 'item';
+        const a = document.createElement('a');
+        a.className = 'title';
+        a.href = link;
+        a.target = "_blank";
+        a.rel = "noreferrer noopener";
+        a.textContent = title;
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        if (source) {
+          const s = document.createElement('span');
+          s.className = 'badge';
+          s.textContent = source;
+          meta.appendChild(s);
+        }
+        if (pubDate) {
+          const t = document.createElement('span');
+          t.textContent = toDateStr(pubDate);
+          meta.appendChild(t);
+        }
+        card.appendChild(a);
+        card.appendChild(meta);
+        resultsEl.appendChild(card);
+      });
+    }
+
+    async function run() {
+      const q = qEl.value.trim();
+      const hl = hlEl.value;
+      const gl = glEl.value;
+      if (!q) return;
+      resultsEl.innerHTML = "";
+      statusEl.style.display = "flex";
+      try {
+        const url = buildRSSUrl(q, hl, gl);
+        const xml = await fetchText(url);
+        const items = parseRSS(xml);
+        render(items);
+      } catch (err) {
+        const div = document.createElement('div');
+        div.className = 'error';
+        div.textContent = `取得に失敗しました: ${err.message || err}`;
+        resultsEl.appendChild(div);
+      } finally {
+        statusEl.style.display = "none";
+      }
+    }
+
+    btn.addEventListener('click', run);
+    // Enterキーでも実行
+    qEl.addEventListener('keydown', e => { if (e.key === 'Enter') run(); });
+
+    // 初期表示（デモ）
+    run();
+  </script>
+</body>
+</html>
+
