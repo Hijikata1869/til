@@ -32,16 +32,19 @@ end
 
 ## 0. 詰まったときの索引
 
-| 症状・疑問                                                | 見る節 |
-| --------------------------------------------------------- | ------ |
-| なぜクラスじゃなくてモジュールなの？                      | 1      |
-| `extend` と `include` の違いが分からない                  | 3      |
-| `included do` って何のためにあるの？                      | 4, 5   |
-| モジュール直下に `before_action` を書いたらエラーになった | 4      |
-| そもそも `before_action` を書く必要ある？                 | 6      |
-| `skip_before_action` はどこで定義されてる？               | 8      |
-| このメソッドどこから来たの？                              | 9      |
-| なんか暗黙の前提が多くて気持ち悪い                        | 10     |
+| 症状・疑問                                                         | 見る節 |
+| ------------------------------------------------------------------ | ------ |
+| なぜクラスじゃなくてモジュールなの？                               | 1      |
+| `concerns/` の「自動読み込み」って何が自動なの？                   | 1      |
+| `uninitialized constant` が出た / ファイルを置いたのに認識されない | 1      |
+| なぜ `Concerns::Authentication` じゃなくて `Authentication` なの？ | 1      |
+| `extend` と `include` の違いが分からない                           | 3      |
+| `included do` って何のためにあるの？                               | 4, 5   |
+| モジュール直下に `before_action` を書いたらエラーになった          | 4      |
+| そもそも `before_action` を書く必要ある？                          | 6      |
+| `skip_before_action` はどこで定義されてる？                        | 8      |
+| このメソッドどこから来たの？                                       | 9      |
+| なんか暗黙の前提が多くて気持ち悪い                                 | 10     |
 
 ---
 
@@ -73,9 +76,107 @@ Ruby は単一継承なので、ここに「認証機能を持ったクラス」
 
 ### `app/controllers/concerns/`
 
-Rails が用意している置き場。ここに置いたモジュールは自動読み込みされる。
-"Concern" = 関心事 = **1つの機能的なまとまり**。
+Rails が用意している置き場。"Concern" = 関心事 = **1つの機能的なまとまり**。
 `app/models/concerns/` にも同じ仕組みがある。
+
+#### 「自動で読み込まれる」の意味
+
+> **重要: 「自動読み込み」= Ruby の `require` が不要、という意味。
+> 「どこかのクラスに自動で混ざる」という意味ではない。**
+
+`concerns/` に置いただけでは、どのコントローラにも適用されない。
+`ApplicationController` に `include Authentication` と手で書いて初めて機能する
+（`rails g authentication` のログに `gsub app/controllers/application_controller.rb`
+とあるのが、まさにこの行を差し込んでいる）。
+
+**自動なのは「読み込み」であって「適用」ではない。**
+
+素の Ruby なら本来こう書く必要がある:
+
+```ruby
+require_relative 'concerns/authentication'   # これがないと定数が見つからない
+
+class ApplicationController < ActionController::API
+  include Authentication
+end
+```
+
+Rails ではこの `require` を書かない。
+`Authentication` という**定数に初めて触れた瞬間**に、Rails が
+「その名前のファイルがどこかにあるはず」と探しに行き、見つけたらその場で読み込む。
+
+これが自動読み込み（autoloading）。Rails 6 以降は **Zeitwerk** が担当している。
+
+#### どこを探しに行くのか（オートロードパス）
+
+`app/` 直下のディレクトリは基本的に全部登録される
+（`app/models`, `app/controllers`, `app/jobs`, `app/mailers` など）。
+
+通常は**オートロードパスからの相対パスが定数名に対応する**。
+
+```
+app/controllers/admin/users_controller.rb  →  Admin::UsersController
+```
+
+ディレクトリ名がモジュールのネストになる。
+
+#### なぜ `Concerns::Authentication` ではなく `Authentication` なのか
+
+上のルールをそのまま当てはめると
+`app/controllers/concerns/authentication.rb` は `Concerns::Authentication` のはず。
+でも実際は `Authentication`。
+
+**理由: `concerns` ディレクトリ自体がオートロードパスとして登録されているから。**
+`app/controllers` と `app/controllers/concerns` の**両方がルート扱い**になる。
+だから `concerns/` からの相対パスで名前が決まり、`Concerns::` が付かない。
+
+これは Rails が明示的にそう設定しているもので、他のディレクトリ名では起きない。
+`app/controllers/helpers/foo.rb` を作れば普通に `Helpers::Foo` になる。
+
+#### 命名規約がすべて
+
+Zeitwerk は**ファイル名から定数名を推測する**ので、ずれると動かない。
+
+| ファイル                     | 期待される定数   |
+| ---------------------------- | ---------------- |
+| `concerns/authentication.rb` | `Authentication` |
+| `concerns/api_response.rb`   | `ApiResponse`    |
+| `concerns/user_scoped.rb`    | `UserScoped`     |
+
+スネークケース → キャメルケースの単純変換。
+
+**ハマりどころ: 頭字語。**
+`concerns/api_response.rb` の中身を `APIResponse` と定義すると、
+Zeitwerk は `ApiResponse` を期待しているのでエラーになる。
+`APIResponse` にしたいなら `config/initializers/inflections.rb` で頭字語を登録する。
+
+**ファイルを置いたのに定数が見つからないとき**は、たいてい命名か置き場所のずれ。
+
+```bash
+bin/rails zeitwerk:check   # 規約に反しているファイルを教えてくれる
+```
+
+#### 開発環境ではリロードも働く
+
+ファイルを保存すると次のリクエストで読み直される（サーバー再起動が不要な理由）。
+
+ただし例外あり:
+
+- `config/` 以下を変えたとき → **再起動が必要**
+- `lib/`（デフォルトではオートロード対象外）→ 同上
+
+「コードを直したのに反映されない」ときは、まずここを疑う。
+本番環境では起動時に全部読み込む（eager loading）ので、リロードは起きない。
+
+#### エラーからの切り分け
+
+「読み込まれる」が Ruby の `require` の話なのか、`include` の話なのかを区別しておくと、
+エラーメッセージの読み分けができる。
+
+| エラー                                                     | 意味                                                   |
+| ---------------------------------------------------------- | ------------------------------------------------------ |
+| `NameError: uninitialized constant Authentication`         | **読み込み**の問題。ファイル名・置き場所・定数名のずれ |
+| `NoMethodError: undefined method 'require_authentication'` | **適用**の問題。`include` を書き忘れている             |
 
 ---
 
